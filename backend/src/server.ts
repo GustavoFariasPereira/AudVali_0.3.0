@@ -2,14 +2,16 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import  colaboradorRouter  from "./modules/colaboradores/colaborador.router";
-import  emailRouter  from "./modules/emails/email.router";
+import colaboradorRouter  from "./modules/colaboradores/colaborador.router";
+import emailRouter  from "./modules/emails/email.router";
 import auditoriaRouter from "./modules/auditorias/auditoria.router";
+import administradorRouter from "./modules/administradores/administrador.router";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/administradores", administradorRouter);
 app.use("/api/colaboradores", colaboradorRouter);
 app.use("/api/emails", emailRouter);
 app.use("/api/auditorias", auditoriaRouter);

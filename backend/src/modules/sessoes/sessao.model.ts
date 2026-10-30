@@ -1,30 +1,38 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export type TipoUsuario = "colaborador" | "administrador";
+
 export interface ISessao extends Document {
-    colaboradorId: mongoose.Types.ObjectId;
+    tipo: TipoUsuario;
+    colaboradorId?: mongoose.Types.ObjectId;
+    administradorId?: mongoose.Types.ObjectId;
     criadoEm: Date;
     revogadaEm?: Date;
 }
 
 const sessaoSchema = new Schema<ISessao>({
+    tipo: {
+        type: String,
+        enum: ["colaborador", "administrador"],
+        default: "colaborador",
+        required: true
+    },
     colaboradorId: {
         type: Schema.Types.ObjectId,
         ref: "Colaborador",
-        required: true
+        required: function (this: ISessao) {
+            return this.tipo === "colaborador";
+        }
     },
-
-    criadoEm: {
-        type: Date,
-        default: Date.now,
-        required: true
+    administradorId: {
+        type: Schema.Types.ObjectId,
+        ref: "Administrador",
+        required: function (this: ISessao) {
+            return this.tipo === "administrador";
+        }
     },
-
-    revogadaEm: {
-        type: Date
-    }
+    criadoEm: { type: Date, default: Date.now, required: true },
+    revogadaEm: { type: Date }
 });
 
-export const Sessao = mongoose.model<ISessao>(
-    "Sessao",
-    sessaoSchema
-);
+export const Sessao = mongoose.model<ISessao>("Sessao", sessaoSchema);

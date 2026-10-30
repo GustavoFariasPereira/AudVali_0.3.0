@@ -134,6 +134,7 @@ export async function perfilColaborador(
     .select("_id nome email");
 
     if (!colaborador) {
+        console.error("Colaborador não encontrado.");
         throw new Error("Colaborador não encontrado.");
     }
 

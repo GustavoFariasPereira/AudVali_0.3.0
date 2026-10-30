@@ -93,7 +93,6 @@ export async function atualizarAuditoria(
   }
 
   if (produtosParaRemover && produtosParaRemover.length > 0) {
-    console.log("Removendo produtos com IDs: ", produtosParaRemover);
     auditoriaExistente.produtos = auditoriaExistente.produtos.filter(
       (p) => !produtosParaRemover.includes(p._id?.toString() ?? "")
     );

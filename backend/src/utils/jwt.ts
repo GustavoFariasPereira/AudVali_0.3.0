@@ -8,15 +8,18 @@ if (!JWT_SECRET) {
     throw new Error("JWT_SECRET não configurado.");
 }
 
-export interface JwtPayload extends JwtLibraryPayload {
-    colaboradorId: string;
+export type TipoUsuario = "colaborador" | "administrador";
+
+export interface DadosToken {
+    tipo?: TipoUsuario;
+    colaboradorId?: string;
+    administradorId?: string;
     sessaoId: string;
 }
 
-export function gerarToken(payload: {
-    colaboradorId: string;
-    sessaoId: string;
-}): string {
+export interface JwtPayload extends JwtLibraryPayload, DadosToken {}
+
+export function gerarToken(payload: DadosToken): string {
     return jwt.sign(payload, JWT_SECRET!, {
         expiresIn: "8d"
     });

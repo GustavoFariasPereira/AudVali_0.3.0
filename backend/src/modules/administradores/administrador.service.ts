@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { gerarToken } from "../../utils/jwt";
 import { Sessao } from "../sessoes/sessao.model";
-import { Administrador, IAdministrador } from "./administrador.model";
+import { Administrador, IAdiministradorResponse, IAdministrador } from "./administrador.model";
 import { validarAdministrador } from "./administrador.validator";
 
 export async function criarADM(
@@ -67,8 +67,14 @@ export async function loginADM(
         sessaoId: String(sessao._id)
     });
 
+    const administradorResponse: IAdiministradorResponse = {
+        _id: administrador._id.toString(),
+        nome: administrador.nome,
+        senhaAtualizadaEm: administrador.senhaAtualizadaEm
+    }
+
     return {
-        administrador,
+        administradorResponse,
         token
     };
 }
@@ -113,4 +119,18 @@ export async function trocarSenhaADM(
         },
         { $set: { revogadaEm: new Date() } }
     );
+}
+
+export async function buscarPerfilADM(
+    _id: string
+) {
+    const administrador = await Administrador.findById(_id)
+    .select("_id nome senhaAtualizadaEm");
+
+    if (!administrador) {
+        console.error("Administrador não encontrado.");
+        throw new Error("Administrador não encontrado.");
+    }
+
+    return administrador;
 }

@@ -1,15 +1,29 @@
 import { useState } from "react";
 import { Alert, KeyboardAvoidingView, Platform, View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native"
 import { useRouter } from "expo-router";
-import { useLogarColaborador } from "@/modules/colaboradores/colaborador.hook";
+import { useLogin } from "@/modules/auths/auth.hook";
+
+interface ILoginResponse{
+    mensagem: string | null;
+    senhaExpirou: boolean;
+}
 
 export default function LoginColaboradorScreen(){
     const router = useRouter();
-    const { handleLogarColaborador, loading, error, success } = useLogarColaborador();
-    const [email, setEmail] = useState("");
+    const { handleLogin, loading, error, success } = useLogin();
+    const [modoAdmin, setModoAdmin] = useState(false);
+    const [loginResponse, setLoginResponse] = useState<ILoginResponse | null>(null);
+    const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
-    const onLoginColaboradorPress = async () =>{
-        await handleLogarColaborador(email, senha);
+    const onLoginPress = async () =>{
+       setLoginResponse(await handleLogin(usuario, senha, modoAdmin));
+       if(modoAdmin && loginResponse?.senhaExpirou){
+         router.replace("/alterarSenhaAdministrador");
+       } else if(modoAdmin){
+         router.replace("/dashboard");
+       } else{
+         router.replace("/");
+       }
     };
     if(success){
         Alert.alert(
@@ -25,12 +39,14 @@ export default function LoginColaboradorScreen(){
             <View style={styles.innerContainer}>
                 <Text style={styles.logo}>AppAudVali</Text>
 
+                {modoAdmin && <Text style={styles.subtitulo}>Acesso administrativo</Text>}
+
                 <Text style={styles.label}>E-mail</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Digite o seu e-mail"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={usuario}
+                    onChangeText={setUsuario}
                     keyboardType="email-address"
                     autoCapitalize="none"
                 />
@@ -46,7 +62,7 @@ export default function LoginColaboradorScreen(){
 
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={onLoginColaboradorPress}
+                    onPress={onLoginPress}
                     disabled={loading}
                 >
                     {loading ? (
@@ -56,12 +72,16 @@ export default function LoginColaboradorScreen(){
                     )}
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => router.replace("/cadastroColaborador")}>
-                <Text
-                    style={{ textAlign: "center", marginTop: 20, color: "#007AFF" }}
-                >
-                    Criar conta
-                </Text>
+                {!modoAdmin && (
+                    <TouchableOpacity onPress={() => router.replace("/cadastroColaborador")}>
+                        <Text style={{ textAlign: "center", marginTop: 20, color: "#007AFF" }}>Criar conta</Text>
+                    </TouchableOpacity>
+                )}
+
+                <TouchableOpacity onPress={() => setModoAdmin((atual) => !atual)}>
+                    <Text style={styles.linkSecundario}>
+                        {modoAdmin ? "Sou colaborador" : "Sou administrador"}
+                    </Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
@@ -111,4 +131,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  subtitulo: {
+    textAlign: "center",
+    marginTop: -30,
+    marginBottom: 30,
+    color: "#666",
+  },
+  linkSecundario: {
+    textAlign: "center",
+    marginTop: 30,
+    color: "#999",
+    fontSize: 14,
+   },
 });

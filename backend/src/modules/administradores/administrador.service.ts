@@ -3,6 +3,7 @@ import { gerarToken } from "../../utils/jwt";
 import { Sessao } from "../sessoes/sessao.model";
 import { Administrador, IAdiministradorResponse, IAdministrador } from "./administrador.model";
 import { validarAdministrador } from "./administrador.validator";
+import { meiaNoiteBrasil } from "../../utils/data";
 
 export async function criarADM(
     administrador: IAdministrador
@@ -92,7 +93,8 @@ export async function trocarSenhaADM(
     senhaAtual: string,
     novaSenha: string
 ) {
-    validarAdministrador(senhaAtual);
+    if (!senhaAtual) throw new Error("Informe a senha atual.");
+    
     validarAdministrador(novaSenha);
 
     const admin = await Administrador.findById(administradorId).select("+senha");
@@ -108,7 +110,7 @@ export async function trocarSenhaADM(
     }
 
     admin.senha = await bcrypt.hash(novaSenha, 12);
-    admin.senhaAtualizadaEm = new Date();
+    admin.senhaAtualizadaEm = meiaNoiteBrasil();
     await admin.save();
 
     await Sessao.updateMany(

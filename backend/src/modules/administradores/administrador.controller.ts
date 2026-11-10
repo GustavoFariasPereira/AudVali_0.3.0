@@ -42,8 +42,8 @@ export async function atualizarSenhaADM(
     res: Response
 ) {
     try{
-        const { administradorId, sessaoId, senhaAtual, novaSenha } = req.body;
-        await trocarSenhaADM( administradorId, sessaoId, senhaAtual, novaSenha);
+        const { senhaAtual, novaSenha } = req.body;
+        await trocarSenhaADM( req.administradorId as any, req.sessaoId as any, senhaAtual, novaSenha);
         return res.status(200).json({
             mensagem: "Senha do ADM alterada com sucesso.",
         });

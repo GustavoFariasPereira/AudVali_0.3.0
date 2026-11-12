@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { Colaborador } from "../colaboradores/colaborador.model";
+import { Colaborador, IColaboradorResponse } from "../colaboradores/colaborador.model";
 import { criarVerificacao } from "../emails/email.service";
 import { validarColaborador } from "./colaborador.validator";
 import { gerarToken } from "../../utils/jwt";
@@ -55,7 +55,12 @@ export async function loginColaborador(
     email: string,
     senha: string
 ) {
-    validarColaborador(email, senha);
+    if (!email || !senha) {
+        console.error("E-mail e senha são obrigatórios.");
+        throw new Error("E-mail e senha são obrigatórios.");
+    }
+
+    validarColaborador(email);
 
     const emailNormalizado = email.trim().toLowerCase();
 
@@ -121,8 +126,13 @@ export async function loginColaborador(
         sessaoId: sessao._id.toString()
     });
 
+    const colaboradorResponse: IColaboradorResponse = {
+        _id: colaborador._id.toString(),
+        nome: colaborador.nome
+    }
+
     return {
-        colaborador,
+        colaboradorResponse,
         token
     };
 }

@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/cadastrar", cadastroADMRateLimit, cadastrarADM);
 router.post("/login", loginLimit, logarADM);
-router.put("/alterarSenha", alterarSenhaADMRateLimit, atualizarSenhaADM);
+router.put("/alterarSenha", alterarSenhaADMRateLimit, authMiddleware, atualizarSenhaADM);
 router.get("/perfil", authMiddleware, perfilADM);
 
 export default router;

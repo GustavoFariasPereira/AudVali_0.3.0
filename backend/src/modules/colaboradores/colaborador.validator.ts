@@ -1,6 +1,6 @@
 export function validarColaborador(
     email: string,
-    senha: string,
+    senha?: string,
     nome?: string
 ) {
     if(nome !== undefined){
@@ -17,8 +17,10 @@ export function validarColaborador(
     }
 
     const regexSenha = /^[a-zA-Z0-9]{8}$/;
-    if (!senha || senha.length < 8 || !regexSenha.test(senha)) {
-        console.error("A senha deve possuir pelo menos 8 caracteres e conter apenas letras e números");
-        throw new Error("A senha deve possuir pelo menos 8 caracteres e conter apenas letras e números");
+    if (senha !== undefined) {
+        if (!senha || senha.length < 8 || !regexSenha.test(senha)) {
+            console.error("A senha deve possuir pelo menos 8 caracteres e conter apenas letras e números");
+            throw new Error("A senha deve possuir pelo menos 8 caracteres e conter apenas letras e números");
+        }
     }
 }

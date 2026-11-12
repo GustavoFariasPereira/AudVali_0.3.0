@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 export function validarAdministrador(
-    senha: string,
+    senha?: string,
     nome?: string
 ) {
     if(nome !== undefined){
@@ -11,10 +11,15 @@ export function validarAdministrador(
         }
     }
     const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{25}$/;
-    if(!senha || !regexSenha.test(senha)){
-        console.error("Senha deve ter caractere especial, numero, letra minúscula, letra maiúscula e 25 dígitos.");
-        throw new Error("Senha deve ter caractere especial, numero, letra minúscula, letra maiúscula e 25 dígitos.");
+    if(senha !== undefined) {
+        if(!senha || !regexSenha.test(senha)) {
+            console.error("Senha deve ter caractere especial, numero, letra minúscula, letra maiúscula e 25 dígitos.");
+            throw new Error("Senha deve ter caractere especial, numero, letra minúscula, letra maiúscula e 25 dígitos.");
+        }
     }
+    if (senha === undefined && nome === undefined) {
+    throw new Error("Informe nome ou senha para validar.");
+}
 }
 
 export async function confirmarSenhaADM(

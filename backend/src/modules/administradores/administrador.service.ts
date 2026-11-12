@@ -30,11 +30,9 @@ export async function loginADM(
     nome: string,
     senha: string
 ) {
-    validarAdministrador(senha, nome);
+    validarAdministrador(undefined, nome);
 
-    const administrador = await Administrador.findOne({
-        nome: nome,
-    });
+    const administrador = await Administrador.findOne({nome: nome}).select("+senha");
 
     const senhaFake = "$2b$10$abcdefghijklmnopqrstuvwxyz12345678901234567890123456789"; 
     const hash = administrador?.senha || senhaFake;
@@ -93,12 +91,12 @@ export async function trocarSenhaADM(
     senhaAtual: string,
     novaSenha: string
 ) {
+    if (!administradorId || !sessaoId) throw new Error("Sessão inválida.");
+    
     if (!senhaAtual) throw new Error("Informe a senha atual.");
     
     validarAdministrador(novaSenha);
-
     const admin = await Administrador.findById(administradorId).select("+senha");
-
     if (!admin || !(await bcrypt.compare(senhaAtual, admin.senha))) {
         console.error("Senha atual incorreta.");
         throw new Error("Senha atual incorreta.");

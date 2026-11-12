@@ -9,6 +9,11 @@ export interface IColaborador extends Document {
     emailVerificado: boolean;
 };
 
+export interface IColaboradorResponse{
+    _id?: string;
+    nome: string;
+}
+
 const ColaboradorSchema = new Schema<IColaborador>({
     nome: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },

@@ -7,6 +7,7 @@ export interface ISessao extends Document {
     colaboradorId?: mongoose.Types.ObjectId;
     administradorId?: mongoose.Types.ObjectId;
     criadoEm: Date;
+    ultimoAcessoEm?: Date;
     revogadaEm?: Date;
 }
 
@@ -31,7 +32,8 @@ const sessaoSchema = new Schema<ISessao>({
             return this.tipo === "administrador";
         }
     },
-    criadoEm: { type: Date, default: Date.now, required: true },
+    criadoEm: { type: Date, default: Date.now },
+    ultimoAcessoEm: { type: Date, default: Date.now },
     revogadaEm: { type: Date }
 });
 

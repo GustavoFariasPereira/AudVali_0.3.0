@@ -21,7 +21,7 @@ export interface JwtPayload extends JwtLibraryPayload, DadosToken {}
 
 export function gerarToken(payload: DadosToken): string {
     return jwt.sign(payload, JWT_SECRET!, {
-        expiresIn: "8d"
+        expiresIn: "15d"
     });
 }
 

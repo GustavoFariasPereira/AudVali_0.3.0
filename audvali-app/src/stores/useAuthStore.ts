@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { logarColaborador, logarADM } from "@/modules/auths/auth.service";
+import { logarColaborador, logarADM, logout as logoutApi } from "@/modules/auths/auth.service";
 import { IUser, IUserADM, TipoUsuario } from "@/modules/auths/auth.model";
 import { perfilColaborador } from "@/modules/colaboradores/colaborador.service";
 import { perfilADM } from "@/modules/administradores/administrador.service";
@@ -17,9 +17,10 @@ interface AuthState {
     loginAdministrador: (nome: string, senha: string) => Promise<void>;
     carregarSessao: () => Promise<void>;
     logout: () => Promise<void>;
+    limparSessao: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
     user: null,
     tipo: null,
     isAuthenticated: false,
@@ -55,8 +56,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
             const userLogado =
                 tipo === "administrador"
-                    ? await perfilADM(token)
-                    : await perfilColaborador(token);
+                    ? await perfilADM()
+                    : await perfilColaborador();
 
             set({
                 user: userLogado,
@@ -94,7 +95,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
     },
 
-    logout: async () => {
+    limparSessao: async () => {
         await SecureStore.deleteItemAsync("auth_token");
         await SecureStore.deleteItemAsync("auth_tipo");
 
@@ -104,5 +105,15 @@ export const useAuthStore = create<AuthState>((set) => ({
             isAuthenticated: false,
             senhaExpirada: false,
         });
+    },
+
+    logout: async () => {
+        try {
+            await logoutApi(); // o interceptor coloca o token no header
+        } catch {
+            // ignora: o logout local acontece de qualquer forma
+        } finally {
+            await get().limparSessao();
+        }
     },
 }));

@@ -50,3 +50,19 @@ export async function logarADM(
         throw new Error("Erro desconhecido ao logar ADM" + error);
     }
 }
+
+export async function logout(): Promise<{ mensagem: string }> {
+    try {
+        const { data } = await api.post<{ mensagem: string }>(
+            "/api/auths/logout",
+            null,
+            { timeout: 5000 }
+        );
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw new Error(error.response?.data?.mensagem ?? "Erro ao realizar logout.");
+        }
+        throw new Error("Erro desconhecido ao realizar logout.");
+    }
+}

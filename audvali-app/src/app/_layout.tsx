@@ -1,6 +1,7 @@
 import { Stack, router, useSegments } from "expo-router";
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { registrarAoSessaoExpirar } from "@/api";
 
 export default function RootLayout() {
     const {
@@ -10,6 +11,10 @@ export default function RootLayout() {
     } = useAuthStore();
 
     const segments = useSegments();
+
+    useEffect(() => {
+        registrarAoSessaoExpirar(() => useAuthStore.getState().limparSessao());
+    }, []);
 
     useEffect(() => {
         carregarSessao();

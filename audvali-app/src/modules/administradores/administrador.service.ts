@@ -40,15 +40,9 @@ export async function alterarSenhaADM(
     }
 }
 
-export async function perfilADM(
-    token: string
-): Promise<IUserADM> {
+export async function perfilADM(): Promise<IUserADM> {
     try {
-        const { data } = await api.get<IUserADM>("/api/administradores/perfil", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const { data } = await api.get<IUserADM>("/api/administradores/perfil");
         return data;
     } catch (error) {
         if (error instanceof AxiosError) {

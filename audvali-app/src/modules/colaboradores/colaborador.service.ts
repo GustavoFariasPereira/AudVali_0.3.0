@@ -18,15 +18,9 @@ export async function cadastrarColaborador(nome: string, email: string, senha: s
     }
 }
 
-export async function perfilColaborador(
-    token: string
-): Promise<IUser> {
+export async function perfilColaborador(): Promise<IUser> {
     try {
-        const { data } = await api.get<IUser>("/api/colaboradores/perfil", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const { data } = await api.get<IUser>("/api/colaboradores/perfil");
         return data;
     } catch (error) {
         if (error instanceof AxiosError) {

@@ -1,10 +1,11 @@
-import { Text, View, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, ScrollView, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../assets/colors/paleta01";
 import { useDadosStore } from "../stores/useAuditoriaStore";
 import { useEffect, useState } from "react";
 import * as Network from "expo-network";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Index() {
   const router = useRouter();
@@ -63,6 +64,24 @@ export default function Index() {
 
   const statusVisual = obterStatusVisual();
 
+  const logout = useAuthStore((s) => s.logout);
+  const [saindo, setSaindo] = useState(false);
+
+  function confirmarSaida() {
+    Alert.alert("Sair", "Deseja realmente sair da conta?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Sair",
+        style: "destructive",
+        onPress: async () => {
+          setSaindo(true);
+          await logout();
+          // sem router.replace: o RootLayout redireciona quando isAuthenticated vira false
+        },
+      },
+    ]);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -119,7 +138,22 @@ export default function Index() {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.footer}>AudVali © 2026 - {new Date().getFullYear()}</Text>
+          <View>
+            <TouchableOpacity
+              style={styles.buttonLogout}
+              activeOpacity={0.7}
+              disabled={saindo}
+              onPress={confirmarSaida}
+            >
+              {saindo ? (
+                <ActivityIndicator color="#EF5350" />
+              ) : (
+                <Text style={styles.buttonLogoutText}>Sair da conta</Text>
+              )}
+            </TouchableOpacity>
+
+            <Text style={styles.footer}>AudVali © 2026 - {new Date().getFullYear()}</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -134,7 +168,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingVertical: 35,
     justifyContent: "space-between",
   },
   title: {
@@ -231,6 +265,17 @@ const styles = StyleSheet.create({
     color: Colors.brand.gray,
     textAlign: "center",
     fontSize: 12,
-    marginTop: 24,
+    marginTop: 22,
+  },
+  buttonLogout: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    marginTop: 8,
+  },
+  buttonLogoutText: {
+    color: "#D32F2F",
+    fontSize: 15,
+    fontWeight: "600",
   },
 });

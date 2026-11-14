@@ -6,6 +6,7 @@ import colaboradorRouter  from "./modules/colaboradores/colaborador.router";
 import emailRouter  from "./modules/emails/email.router";
 import auditoriaRouter from "./modules/auditorias/auditoria.router";
 import administradorRouter from "./modules/administradores/administrador.router";
+import authRouter from "./modules/auths/auth.router";
 
 const app = express();
 app.use(cors());
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/administradores", administradorRouter);
 app.use("/api/colaboradores", colaboradorRouter);
+app.use("/api/auths", authRouter);
 app.use("/api/emails", emailRouter);
 app.use("/api/auditorias", auditoriaRouter);
 

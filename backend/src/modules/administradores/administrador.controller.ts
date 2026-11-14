@@ -59,7 +59,13 @@ export async function perfilADM(
     res: Response
 ){
     try{
-        const resultado = await buscarPerfilADM(req.administradorId!);
+        const administradorId = req.administradorId;
+
+        if (!administradorId) {
+            return res.status(401).json({ mensagem: "Não autenticado." });
+        }
+
+        const resultado = await buscarPerfilADM(administradorId);
         return res.status(200).json(resultado);
     } catch (error: unknown){
         return res.status(400).json({

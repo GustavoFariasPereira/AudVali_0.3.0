@@ -13,6 +13,16 @@ export interface IAdiministradorResponse{
     senhaAtualizadaEm: Date;
 }
 
+export interface IDashboard{
+    colaboradores: number;
+    colaboradoresAtivos: number;
+    colaboradoresBloqueados: number;
+    atividadesColaboradores: [];
+    auditorias: number;
+    auditoriasAtualizadas: number;
+    auditoriasExcluidas: number;
+}
+
 const AdministradorSchema = new Schema<IAdministrador>({
     nome: { type: String, required: true },
     senha: { type: String, required: true, select: false },

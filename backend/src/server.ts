@@ -7,12 +7,16 @@ import emailRouter  from "./modules/emails/email.router";
 import auditoriaRouter from "./modules/auditorias/auditoria.router";
 import administradorRouter from "./modules/administradores/administrador.router";
 import authRouter from "./modules/auths/auth.router";
+import logRouter from "./modules/log-atividades/log-atividade.router";
+import dashboardRouter from "./modules/dashboards/dashboard.router";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/administradores", administradorRouter);
+app.use("/api/atividades", logRouter);
+app.use("/api/dashboard", dashboardRouter);
 app.use("/api/colaboradores", colaboradorRouter);
 app.use("/api/auths", authRouter);
 app.use("/api/emails", emailRouter);

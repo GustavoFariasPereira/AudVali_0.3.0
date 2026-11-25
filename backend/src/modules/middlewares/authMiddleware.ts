@@ -178,8 +178,9 @@ export async function exigirSenhaAtualizada(
 
     const admin = await Administrador
         .findById(req.administradorId)
-        .select("senhaAlteradaEm");
-
+        .select("senhaAtualizadaEm");
+    console.log(req.administradorId);
+    console.log("admin.senhaAlteradaEm", admin?.senhaAtualizadaEm);
     if (!admin || senhaExpirada(admin.senhaAtualizadaEm)) {
         return res.status(403).json({
             codigo: "SENHA_EXPIRADA",

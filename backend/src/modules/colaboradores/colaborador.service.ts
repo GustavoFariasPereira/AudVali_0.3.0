@@ -127,7 +127,8 @@ export async function loginColaborador(
     });
 
     const colaboradorResponse: IColaboradorResponse = {
-        _id: colaborador._id.toString(),
+        colaboradorId: colaborador._id.toString(),
+        sessaoId: sessao._id.toString(),
         nome: colaborador.nome
     }
 

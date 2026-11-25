@@ -10,7 +10,8 @@ export interface IColaborador extends Document {
 };
 
 export interface IColaboradorResponse{
-    _id?: string;
+    colaboradorId?: string;
+    sessaoId?: string;
     nome: string;
 }
 

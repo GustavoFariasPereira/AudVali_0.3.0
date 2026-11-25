@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AcaoLog, RecursoLog } from "../log-atividades/log-atividade.model";
 import { registrarAtividade } from "../log-atividades/log-atividade.service";
+import { obterIpReal } from "../../utils/ip";
 
 /**
  * Registra a atividade DEPOIS que a resposta é enviada (não atrasa a requisição).
@@ -25,7 +26,7 @@ export function registrarLog(acao: AcaoLog, recurso?: RecursoLog) {
                 recurso,
                 recursoId: recursoId ? String(recursoId) : undefined,
                 detalhes: res.locals.detalhesLog,
-                ip: req.ip,
+                ip: obterIpReal(req),
                 sucesso: res.statusCode < 400,
             });
         });

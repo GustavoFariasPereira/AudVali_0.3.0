@@ -80,9 +80,22 @@ export async function loginADM(
 
 export const DIAS_VALIDADE_SENHA = 30;
 
-export function senhaExpirada(senhaAlteradaEm: Date): boolean {
+export function senhaExpirada(senhaAlteradaEm?: Date | string | null): boolean {
+    // Se não houver data registrada, consideramos que a senha expirou (ou exige troca)
+    if (!senhaAlteradaEm) {
+        return true; 
+    }
+
+    // Garante que é um objeto Date real, independente de vir como string ou Date do banco
+    const dataAlteracao = new Date(senhaAlteradaEm);
+
+    // Proteção extra caso a data seja inválida
+    if (isNaN(dataAlteracao.getTime())) {
+        return true;
+    }
+
     const limite = DIAS_VALIDADE_SENHA * 24 * 60 * 60 * 1000;
-    return Date.now() - senhaAlteradaEm.getTime() >= limite;
+    return Date.now() - dataAlteracao.getTime() >= limite;
 }
 
 export async function trocarSenhaADM(

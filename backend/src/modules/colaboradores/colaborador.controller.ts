@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { criarColaborador, loginColaborador, perfilColaborador } from "./colaborador.service";
+import { registrarAtividade } from "../log-atividades/log-atividade.service";
 
 export async function cadastrarColaborador(
     req: Request,
@@ -29,6 +30,14 @@ export async function logarColaborador(
         const { email, senha } = req.body;
 
         const resultado = await loginColaborador(email, senha);
+
+        await registrarAtividade({
+            colaboradorId: resultado.colaboradorResponse.colaboradorId!,
+            sessaoId: resultado.colaboradorResponse.sessaoId,
+            acao: "login",
+            ip: req.ip,
+            sucesso: true,
+        });
 
         return res.status(200).json({
             mensagem: "Login realizado com sucesso.",

@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use("/api/administradores", administradorRouter);
 app.use("/api/atividades", logRouter);
-app.use("/api/dashboard", dashboardRouter);
+app.use("/api/dashboards", dashboardRouter);
 app.use("/api/colaboradores", colaboradorRouter);
 app.use("/api/auths", authRouter);
 app.use("/api/emails", emailRouter);

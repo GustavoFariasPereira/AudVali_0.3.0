@@ -6,10 +6,13 @@ import { ILogAtividade, LogAtividade } from "../log-atividades/log-atividade.mod
 // o que conta como "atividade realizada" (login/logout/trocar_senha ficam de fora)
 // Tipando explicitamente o array com base na interface
 export const ACOES_DE_ATIVIDADE: Array<ILogAtividade['acao']> = [
-    "criar", 
-    "atualizar", 
-    "deletar", 
-    "exportar"
+    "login",
+    "logout",
+    "criar",
+    "atualizar",
+    "deletar",
+    "exportar",
+    "trocar_senha",
 ];
 
 export interface IDashboard {
@@ -24,7 +27,7 @@ export async function obterDashboard(inicio?: Date, fim?: Date): Promise<IDashbo
     const periodoAuditoria = inicio && fim ? { createdAt: { $gte: inicio, $lte: fim } } : {};
 
     const [colaboradoresAtivos, atividadesRealizadas, totalAuditorias] = await Promise.all([
-        Colaborador.countDocuments({ ativo: true }),
+        Colaborador.countDocuments({ bloqueado: false }),
         LogAtividade.countDocuments({
             sucesso: true,
             acao: { $in: ACOES_DE_ATIVIDADE },

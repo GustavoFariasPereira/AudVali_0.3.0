@@ -10,6 +10,6 @@ import { dashboard } from "./dashboard.controller";
 const router = Router();
 
 // GET /api/administradores/dashboard?inicio=&fim=
-router.get("/dashboard", authMiddleware, apenasAdministrador, exigirSenhaAtualizada, dashboard);
+router.get("/painel", authMiddleware, apenasAdministrador, exigirSenhaAtualizada, dashboard);
 
 export default router;
